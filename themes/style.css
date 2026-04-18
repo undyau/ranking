@@ -1,0 +1,96 @@
+em {
+font-style:normal;
+font-weight:bold;
+}
+
+a:link {color: blue; text-decoration: none; font-weight: bold;}
+a:visited {color: purple; text-decoration: none; font-weight: bold;}
+a:hover {color: #FC99EA; text-decoration: underline; }
+a:active {color: red; }
+
+a.PointsLink:link {color: #0000ff; font-weight: normal; margin-left:10;}
+a.PointsLink:visited {color: #894f7b; font-weight: normal; margin-left:10;}
+a.PointsLink:hover {text-decoration: underline; background-color: #FC99EA;  margin-left:10;}
+a.PointsLink:active {color: red; } 
+
+#RunnerLabel{
+font-family: monospace;
+font-size:xx-large;
+margin: 15px;
+text-align:center;
+}
+
+#owner{
+font-family:arial;
+Font-size:10px;
+/*border: 5px solid #CCCCFF*/
+/*background: #00FFFF;*/
+margin: 8px;
+color: #FC99EA;
+text-align:right;
+}
+
+.instructions{
+font-family:arial;
+Font-size:16px;
+float: left;
+width: 50%;
+margin: 15px;
+}
+.notes{
+font-family:arial;
+Font-size:12px;
+border: 3px solid #FC99EA;
+float: right;
+width: 40%;
+margin: 15px;
+padding: 5px;
+border-radius: 5px;
+-moz-border-radius: 5px;
+}
+
+#banner
+{margin: 0 auto;
+font-family:arial;
+/*Width: 640px;*/
+Height: 100px;
+/*Border: #FC99EA solid 10px;*/
+Background: #FC99EA ;
+Color:#000000;
+Font-size:12px;
+Text-align: center;
+Padding-right: 10px;
+border-radius: 8px;
+-moz-border-radius: 8px;
+}
+
+#BannerTitle{margin: 0 auto;
+font-family:arial;
+Color:#000000;
+Font-size:44px;
+Text-align: center;
+}
+
+#BannerTitle a:link,
+#BannerTitle a:visited,
+#LastEvent a:link, 
+#LastEvent a:visited   {color: #000000; font-weight: normal; margin-left:10;}
+
+#BannerTitle a:hover,
+#LastEvent a:hover  {text-decoration: underline;  margin-left:10;}
+
+#LastEvent{margin: 0 auto;
+font-family:arial;
+Color:#000000;
+Font-size:11px;
+Text-align: center;
+}
+
+h1 {
+  font-family:arial;
+  font-weight: bold;
+  Color:#000000;
+  font-size: 24px;
+}
+
+
