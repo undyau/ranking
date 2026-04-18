@@ -965,7 +965,7 @@ function process_row(&$courseid, $item, &$count, &$prevtime)
 
         ++$count;
         ++$runnerid;
-        Trace("Added $name - \$count is $count, count(\$results) is ".count($results));
+//        Trace("Added $name - \$count is $count, count(\$results) is ".count($results));
         }
     }   
     
