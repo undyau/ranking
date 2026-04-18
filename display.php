@@ -56,92 +56,92 @@ function getFilterUrl() {
 
 
 <?php
-	include 'Mobile_Detect.php';
-	$detect = new Mobile_Detect;	
-	$isMobile = $detect->isMobile() && !$detect->isTablet();
-	
-	
-	if (!$isMobile)
-		{
-		include('./banner.php');
-		include('./notes.php');
-		}
+    include 'Mobile_Detect.php';
+    $detect = new Mobile_Detect;    
+    $isMobile = $detect->isMobile() && !$detect->isTablet();
+    
+    
+    if (!$isMobile)
+        {
+        include('./banner.php');
+        include('./notes.php');
+        }
 
   $name = in_array('name', $_GET) ? $_GET['name'] : "";
   $club = in_array('club', $_GET) ? $_GET['club'] : "";
   $state = in_array('state', $_GET) ? $_GET['state'] : "";
   $gender = in_array('gender', $_GET) ? $_GET['gender'] : "";
   $class = in_array('class', $_GET) ? $_GET['class'] : "";
-	$query = 'SELECT COUNT(*) as countall from runners where current_score > 0';
-	$result = $mysqli->query($query) or trigger_error($mysqli->error." ".$query);
-	$row = mysqli_fetch_array ($result, MYSQLI_ASSOC);
-	$count_all = $row['countall'];
-		
-	$query = 'SELECT runners.id as id, runners.name as name,clubs.name as club, clubs.shortname as clubshort, clubs.state as state, runners.gender as gender,
-	runners.class as class, runners.current_ranking as points
+    $query = 'SELECT COUNT(*) as countall from runners where current_score > 0';
+    $result = $mysqli->query($query) or trigger_error($mysqli->error." ".$query);
+    $row = mysqli_fetch_array ($result, MYSQLI_ASSOC);
+    $count_all = $row['countall'];
+        
+    $query = 'SELECT runners.id as id, runners.name as name,clubs.name as club, clubs.shortname as clubshort, clubs.state as state, runners.gender as gender,
+    runners.class as class, runners.current_ranking as points
 from `clubs`, runners where clubs.id = clubid and current_ranking > 0 and clubs.country = "AUS"
 order by runners.current_ranking desc';
-	$result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
-	if ($isMobile)
-		echo '<table id="rankingTable" class="tablesorter" cellspacing="0" cellpadding="2" style="width:auto">';
-	else
-		echo '<table id="rankingTable" class="tablesorter" cellspacing="0" cellpadding="2">';
-	?>
+    $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
+    if ($isMobile)
+        echo '<table id="rankingTable" class="tablesorter" cellspacing="0" cellpadding="2" style="width:auto">';
+    else
+        echo '<table id="rankingTable" class="tablesorter" cellspacing="0" cellpadding="2">';
+    ?>
 
 <thead> 
 <tr> 
-		<th>Pos</th>
+        <th>Pos</th>
     <th>Name</th> 
     <th class="filterable">Club</th>
-	<th class="filterable">State</th>
+    <th class="filterable">State</th>
 <?php
-	if (!$isMobile)
+    if (!$isMobile)
         echo '<th class="filterable">Gender</th>';
-?>		
-	<th class="filterable">Class</th>
+?>      
+    <th class="filterable">Class</th>
     <th>Points</th> 
 </tr> 
-	<tr>
-		<th>Filter:</th>
-		<th>		
+    <tr>
+        <th>Filter:</th>
+        <th>        
 <?php
     echo "<input id='namefilter' name='filter' size='10' onkeyup='Table.filter(this,this)' value='$name'></th>";
-	if (!$isMobile)
-		echo "<th><input id='clubfilter' name='filter' size='15' onkeyup='Table.filter(this,this)' value='$club'></th>";
-	else
-		echo "<th><input id='clubfilter' name='filter' size='2' onkeyup='Table.filter(this,this)' value='$club'></th>";
+    if (!$isMobile)
+        echo "<th><input id='clubfilter' name='filter' size='15' onkeyup='Table.filter(this,this)' value='$club'></th>";
+    else
+        echo "<th><input id='clubfilter' name='filter' size='2' onkeyup='Table.filter(this,this)' value='$club'></th>";
 
     echo "<th><input id='statefilter' name='filter' size='3' onkeyup='Table.filter(this,this)' value='$state'></th>";
 
-	if (!$isMobile)
-		echo "<th><input id='genderfilter' name='filter' size='1' onkeyup='Table.filter(this,this)' value='$gender'></th>";
+    if (!$isMobile)
+        echo "<th><input id='genderfilter' name='filter' size='1' onkeyup='Table.filter(this,this)' value='$gender'></th>";
 
     echo "<th><input id='classfilter' name='filter' size='6' onkeyup='Table.filter(this,this)' value='$class'></th>";
 ?>
 <th></th>
 </thead> 
 <?php
-	if ($result)
-		{
-		echo '<tbody>';
-		$j = $i = 1;
-		$lastpoints = 0;
-		$found = mysqli_num_rows($result);
-		while ($row = mysqli_fetch_array ($result, MYSQLI_ASSOC))
-			{
-			if ($row['points'] != $lastpoints)
-				$j = $i;
-			if ($isMobile)
-				echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['clubshort']."</td><td>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
-			else
-				echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['club']."</td><td>".$row['state']."</td><td>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
-			$i++;			
-			$lastpoints = $row['points'];		
-			}
-		$missing = $count_all - $found;
-		echo "<tr><td></td><td colspan='4'><em>".$missing." further current orienteers omitted - not enough events/points</em></td></tr>";
-		echo '</tbody>';
-		}
+    if ($result)
+        {
+        echo '<tbody>';
+        $j = $i = 1;
+        $lastpoints = 0;
+        $found = mysqli_num_rows($result);
+        while ($row = mysqli_fetch_array ($result, MYSQLI_ASSOC))
+            {
+            if ($row['points'] != $lastpoints)
+                $j = $i;
+            if ($isMobile)
+                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['clubshort']."</td><td>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+            else
+                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['club']."</td><td>".$row['state']."</td><td>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+            $i++;           
+            $lastpoints = $row['points'];       
+            }
+        $missing = $count_all - $found;
+        echo "<tr><td></td><td colspan='4'><em>".$missing." further current orienteers omitted - not enough events/points</em></td></tr>";
+        echo '</tbody>';
+        }
 ?>
 </table>
 </body>

@@ -153,7 +153,7 @@ function do_update()
         echo ' <input type="text" size="10" '.$enabled.' name="date'.$row["id"].'" value="'.$row['date'].'">';
         echo ' <input type="text" size="70" '.$enabled.' name="name'.$row["id"].'" value="'.$row['name'].'">';        
         echo ' <input type="text" size="80" '.$enabled.' name="url'.$row["id"].'" value="'.$row['url'].'">';
-		echo ' <input type="checkbox" '.$enabled.' name="sprint'.$row["id"].'">'; 
+        echo ' <input type="checkbox" '.$enabled.' name="sprint'.$row["id"].'">'; 
         echo '<a href="'.$row['url'].'"  target="_blank">link</a><br/>';
         echo "\r\n";
         $i++;

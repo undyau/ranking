@@ -17,7 +17,7 @@ if (mysqli_num_rows($result) > 0)
   }
 else
   echo "No results for last week";
-	
+    
 $query = "SELECT runners.name as rname, runners.id as runnerid, count(*) as ecount, clubs.name as club from results, runners, events, clubs where results.runnerid = runners.id and results.eventid = events.id and runners.clubid = clubs.id and datediff(curdate(), events.date) <= 365 group by 2 order by 3 desc limit 0,1";
 $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
 if (mysqli_num_rows($result) > 0)

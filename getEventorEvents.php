@@ -11,18 +11,18 @@ save_all_finished($html);
 
 function save_all_finished($html)
 {
-	global $mysqli;
-	$parts = explode('<span><a href="/Events/ResultList?eventId=', $html);
-	Trace("There are ".count($parts)." parts to check");
-	Trace("The HTML is ".strlen($html)." long");
-	foreach ($parts as $part)
-		{
-		$matches = array();
-		if (preg_match('/([0-9]+)"><img alt="Results"/', $part, $matches))
-			{
-			$id = $matches[1];
-			$query = "insert ignore into eventorEvents set id = $id, processed = false";
-			$result = $mysqli->query($query) or   trigger_error($mysqli->error." ".$query);
-			}
-		}
+    global $mysqli;
+    $parts = explode('<span><a href="/Events/ResultList?eventId=', $html);
+    Trace("There are ".count($parts)." parts to check");
+    Trace("The HTML is ".strlen($html)." long");
+    foreach ($parts as $part)
+        {
+        $matches = array();
+        if (preg_match('/([0-9]+)"><img alt="Results"/', $part, $matches))
+            {
+            $id = $matches[1];
+            $query = "insert ignore into eventorEvents set id = $id, processed = false";
+            $result = $mysqli->query($query) or   trigger_error($mysqli->error." ".$query);
+            }
+        }
 }
