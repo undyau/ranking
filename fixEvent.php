@@ -172,13 +172,40 @@ function do_delete()
             do_update();
     }
     
+    $nameSearch   = isset($_GET['name_search'])   ? $_GET['name_search']   : '';
+    $sprintFilter = isset($_GET['sprint_filter']) ? $_GET['sprint_filter'] : '';
+
+    $whereClause  = '';
+    $havingClause = '';
+    if ($nameSearch !== '') {
+        $safeSearch  = mysqli_real_escape_string($mysqli, $nameSearch);
+        $whereClause = "WHERE e.name LIKE '$safeSearch'";
+    }
+    switch ($sprintFilter) {
+        case '1':     $havingClause = "HAVING MIN(r.sprint) = 1 AND MAX(r.sprint) = 1"; break;
+        case '0':     $havingClause = "HAVING MIN(r.sprint) = 0 AND MAX(r.sprint) = 0"; break;
+        case 'mixed': $havingClause = "HAVING MIN(r.sprint) IS NOT NULL AND MIN(r.sprint) != MAX(r.sprint)"; break;
+    }
+
     $query = "SELECT e.name, e.url, e.date, e.id, MIN(r.sprint) as min_sprint, MAX(r.sprint) as max_sprint
               FROM events e LEFT JOIN results r ON r.eventid = e.id
-              GROUP BY e.id, e.name, e.url, e.date ORDER BY e.date DESC LIMIT 100";
+              $whereClause
+              GROUP BY e.id, e.name, e.url, e.date $havingClause ORDER BY e.date DESC LIMIT 100";
     $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
 
     if ($result)
     {
+    echo '<form method="get">';
+    echo '<input type="text" size="40" name="name_search" placeholder="Name pattern (use % as wildcard)" value="'.htmlspecialchars($nameSearch).'">';
+    echo ' <select name="sprint_filter">';
+    echo '<option value=""'     .($sprintFilter===''     ?' selected':'').'>Any</option>';
+    echo '<option value="1"'    .($sprintFilter==='1'    ?' selected':'').'>Sprint</option>';
+    echo '<option value="0"'    .($sprintFilter==='0'    ?' selected':'').'>Not sprint</option>';
+    echo '<option value="mixed"'.($sprintFilter==='mixed'?' selected':'').'>Mixed</option>';
+    echo '</select>';
+    echo ' <input type="submit" value="Search"/>';
+    echo '</form>';
+    echo "\r\n";
     echo'<form onsubmit="return sendChange()" method=post>';
     echo "\r\n";
     echo '<label for="hash">Password</label>';
