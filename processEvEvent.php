@@ -1076,11 +1076,12 @@ function parse_page(&$html, &$skipped)
         return false;
         }
         
+    $sprint = false;
     if (preg_match('/(SPRINT)/', strtoupper($event['name']), $matches))
         {
         Trace("Checking - ".$event['name']." looks like a ".strtolower($matches[0]));
         $sprint = true;
-        }       
+        }
 
     $items = $DOM->getElementsByTagName('table');
 
