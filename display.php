@@ -9,6 +9,9 @@ $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefo
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="content-type">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <title>Big Pink Australian Orienteering Rankings</title>
 <script type="text/javascript" src="jscript/table.js"></script> 
 <script type="text/javascript" src="jscript/postfilter.js"></script> 

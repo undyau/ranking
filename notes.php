@@ -1,3 +1,4 @@
+<div class="notes-wrapper">
 <div class="instructions">
 <p>Results data from <a href="http://eventor.orienteering.asn.au">Eventor</a>. Ranking system is based on the <a href="https://www.britishorienteering.org.uk/images/uploaded/downloads/Competition%20Rule%20S%202014rankingscheme.pdf">BOF system</a> with some small improvements. A competitors best six events are used in calculating their ranking, but only two sprint events are counted in that six. Urban events are not counted.
 Run of the week is based on how many standard deviations a competitor beats their average performance by.</p>
@@ -43,4 +44,5 @@ if (mysqli_num_rows($result) > 0)
 echo $most;
 ?>
 </ul>
+</div>
 </div>
