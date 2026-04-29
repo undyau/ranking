@@ -9,10 +9,22 @@ a:link, a:visited { color: #C8689A; text-decoration: none; font-weight: normal; 
 a:hover           { text-decoration: underline; text-underline-offset: 3px; }
 a:active          { opacity: 0.75; }
 
-a.PointsLink:link {color: #0000ff; font-weight: normal; margin-left:10;}
-a.PointsLink:visited {color: #894f7b; font-weight: normal; margin-left:10;}
-a.PointsLink:hover {text-decoration: underline; background-color: #F5E6EE; margin-left:10;}
-a.PointsLink:active {color: red; }
+a.PointsLink:link, a.PointsLink:visited {
+    color: #A04070;
+    font-weight: normal;
+    font-size: 11px;
+    margin-left: 10px;
+    background: #F5E6EE;
+    border: 1px solid #E0C0D4;
+    border-radius: 3px;
+    padding: 1px 6px;
+    text-decoration: none;
+}
+a.PointsLink:hover {
+    background: #E8B8D0;
+    border-color: #C8689A;
+    text-decoration: none;
+}
 
 #RunnerLabel{
 font-family: 'Inter', Arial, sans-serif;

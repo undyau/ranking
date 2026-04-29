@@ -3,12 +3,16 @@ require_once(__DIR__.'/mysqli_connect.php');
 $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefox/4.0b9pre';
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="content-type">
-<title>Australian Orienteering Rankings</title>
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Big Pink Australian Orienteering Rankings</title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 <script type="text/javascript" src="jscript/tablesorter/jquery.tablesorter.js"></script> 
 <link rel="stylesheet" href="themes/pink/style.css" type="text/css" id="" media="print, projection, screen" />
 <link rel="stylesheet" href="themes/style.css" type="text/css" id="" media="print, projection, screen" />
@@ -23,6 +27,9 @@ $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefo
 </head>
 <body>
 <?php
+    include 'Mobile_Detect.php';
+    $detect = new Mobile_Detect;
+    $isMobile = $detect->isMobile() && !$detect->isTablet();
     include('./banner.php');
 ?>
 
@@ -37,7 +44,7 @@ $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefo
     $row = mysqli_fetch_array ($result, MYSQLI_ASSOC);
     echo "<h1><a href=\"".$row['url']."\">".$row['name']."</a></h1>\r\n";
         
-    $query = "SELECT runners.name as name, results.class as class, results.points as points, clubs.shortname as clubname, runners.id as runnerid
+    $query = "SELECT runners.name as name, results.class as class, results.points as points, clubs.shortname as clubshort, clubs.name as clubname, runners.id as runnerid
 FROM results, runners, clubs
 WHERE results.runnerid = runners.id
 AND results.eventid = $id
@@ -63,7 +70,8 @@ ORDER BY points DESC";
         while ($row = mysqli_fetch_array ($result, MYSQLI_ASSOC))
             {           
             echo "<tr><td>";    
-            echo "<a href = \"http://ranking.bigfootorienteers.com/displayrunner.php?id=".$row['runnerid']."\">".$row['name']."</a></td><td>".$row['clubname']."</td><td>".$row['class']."</td><td>".$row['points']."</td>";
+            $club = $isMobile ? $row['clubshort'] : $row['clubname'];
+            echo "<a href = \"https://ranking.bigfootorienteers.com/displayrunner.php?id=".$row['runnerid']."\">".$row['name']."</a></td><td>".$club."</td><td>".$row['class']."</td><td>".$row['points']."</td>";
             echo "</tr>";
             $i++;               
             }
