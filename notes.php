@@ -33,6 +33,7 @@ if (mysqli_num_rows($result) > 0)
 </ul>-->
 <p>News:</p>
 <ul>
+<li>Improvements: case-insensitive filtering, stripes !!</li>
 <li>Bug fixed: Non-sprint events being flagged as sprints (remediating past events...).</li>
 <li>Nea Shingler was top female at the end of 2025.</li>
 <li>Alastair George was top male at the end of 2025.</li>
