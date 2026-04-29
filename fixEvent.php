@@ -28,25 +28,33 @@ function getCheckedValue( groupName ) {
 
 function enableCtrls( ) {
     var radios = document.getElementsByName( "which" );
-    var id = getCheckedValue("which");
-    for( i = 0; i < radios.length; i++ ) 
+    for( i = 0; i < radios.length; i++ )
         {
         var id = radios[i].value;
         if (!radios[i].checked)
             {
             document.getElementsByName("date" + id)[0].disabled=true;
-            document.getElementsByName("name" + id)[0].disabled=true;
             document.getElementsByName("url" + id)[0].disabled=true;
-            document.getElementsByName("sprint" + id)[0].disabled=true;
             }
         else
             {
             document.getElementsByName("date" + id)[0].removeAttribute("disabled");
-            document.getElementsByName("name" + id)[0].removeAttribute("disabled");
             document.getElementsByName("url" + id)[0].removeAttribute("disabled");
-            document.getElementsByName("sprint" + id)[0].removeAttribute("disabled");
             }
         }
+}
+
+function selectRow( id ) {
+    var radios = document.getElementsByName( "which" );
+    for( i = 0; i < radios.length; i++ )
+        {
+        if( radios[i].value == id )
+            {
+            radios[i].checked = true;
+            break;
+            }
+        }
+    enableCtrls();
 }
 </script> 
 </head>
@@ -85,15 +93,16 @@ function do_update()
     $url = mysqli_real_escape_string($mysqli, $_POST["url".$eventId]);        
     $sprint = mysqli_real_escape_string($mysqli, $_POST["sprint".$eventId]);
     
-    if ($sprint == 1)
+    if ($sprint === '1' || $sprint === '0')
     {
-        $query = "UPDATE results SET sprint = 1 where eventid = $eventId";
+        $sprintVal = (int)$sprint;
+        $query = "UPDATE results SET sprint = $sprintVal where eventid = $eventId";
         $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
-        if ($result == false) 
+        if ($result == false)
         {
             echo "<p style='color:red'>error updating sprint status</p>";
             return;
-        }        
+        }
     }
     
     // Make variables db compliant
@@ -122,12 +131,50 @@ function do_update()
     }
     
 }
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+function do_delete()
+{
+    global $mysqli;
+
+    if (!isset($_POST['hash']))
     {
-        do_update();
+        echo '<p style="color:red">missing password</p>';
+        return;
+    }
+    $query = "SELECT value from control where name = 'maintenance pw'";
+    $result = $mysqli->query($query) or trigger_error($mysqli->error." ".$query);
+    if ($result !== false)
+    {
+        $row = $result->fetch_assoc();
+        if ($row['value'] != md5($_POST['hash']))
+        {
+            echo "<p style='color:red'>invalid password</p>";
+            return;
+        }
+    }
+
+    $eventId = mysqli_real_escape_string($mysqli, $_POST['delete']);
+    if (!ctype_digit($eventId))
+        return;
+
+    $mysqli->query("DELETE FROM results WHERE eventid = $eventId")
+        or trigger_error($mysqli->error, E_USER_ERROR);
+    $mysqli->query("DELETE FROM events WHERE id = $eventId")
+        or trigger_error($mysqli->error, E_USER_ERROR);
+
+    echo "<p style='color:green'>Deleted event $eventId</p>";
+}
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST')
+    {
+        if (isset($_POST['delete']))
+            do_delete();
+        else
+            do_update();
     }
     
-    $query = "SELECT name, url, date, id from events order by date desc limit 150";
+    $query = "SELECT e.name, e.url, e.date, e.id, MIN(r.sprint) as min_sprint, MAX(r.sprint) as max_sprint
+              FROM events e LEFT JOIN results r ON r.eventid = e.id
+              GROUP BY e.id, e.name, e.url, e.date ORDER BY e.date DESC LIMIT 100";
     $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
 
     if ($result)
@@ -135,7 +182,8 @@ function do_update()
     echo'<form onsubmit="return sendChange()" method=post>';
     echo "\r\n";
     echo '<label for="hash">Password</label>';
-    echo '<input type="password" size="16" name="hash"><br/>';
+    echo '<input type="password" size="16" name="hash">';
+    echo ' <input type="submit" value="Submit"/><br/>';
     echo "\r\n";
     $i = 0;
     while ($row = mysqli_fetch_array ($result, MYSQLI_ASSOC))
@@ -151,10 +199,20 @@ function do_update()
             echo '<input type="radio" name="which" value="'.$row["id"].'" onclick = "enableCtrls()">';
         }
         echo ' <input type="text" size="10" '.$enabled.' name="date'.$row["id"].'" value="'.$row['date'].'">';
-        echo ' <input type="text" size="70" '.$enabled.' name="name'.$row["id"].'" value="'.$row['name'].'">';        
+        echo ' <input type="text" size="70" name="name'.$row["id"].'" value="'.$row['name'].'" onclick="selectRow('.$row["id"].')">';
         echo ' <input type="text" size="80" '.$enabled.' name="url'.$row["id"].'" value="'.$row['url'].'">';
-        echo ' <input type="checkbox" '.$enabled.' name="sprint'.$row["id"].'">'; 
-        echo '<a href="'.$row['url'].'"  target="_blank">link</a><br/>';
+        if ($row['min_sprint'] !== null && $row['min_sprint'] == $row['max_sprint'])
+            $sprintSel = (string)(int)$row['min_sprint'];
+        else
+            $sprintSel = '';
+        echo ' <select name="sprint'.$row["id"].'" onclick="selectRow('.$row["id"].')">';
+        echo '<option value=""'.($sprintSel===''?' selected':'').'>mixed</option>';
+        echo '<option value="1"'.($sprintSel==='1'?' selected':'').'>sprint</option>';
+        echo '<option value="0"'.($sprintSel==='0'?' selected':'').'>not sprint</option>';
+        echo '</select>';
+        echo ' <a href="'.$row['url'].'"  target="_blank">link</a>';
+        echo ' <button type="submit" name="delete" value="'.$row["id"].'" onclick="return confirm(\'Delete event and all its results?\')">Delete</button>';
+        echo '<br/>';
         echo "\r\n";
         $i++;
         }
