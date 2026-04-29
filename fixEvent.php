@@ -3,13 +3,102 @@ require_once(__DIR__.'/mysqli_connect.php');
 $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefox/4.0b9pre';
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="content-type">
-<title>Australian Orienteering Rankings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Big Pink Rankings — Fix Event</title>
 <link rel="stylesheet" href="themes/pink/style.css" type="text/css" id="" media="print, projection, screen" />
 <link rel="stylesheet" href="themes/style.css" type="text/css" id="" media="print, projection, screen" />
+<style>
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #f9f4f7;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    color: #333;
+}
+.page-header {
+    background: linear-gradient(135deg, #C8689A 0%, #A04070 100%);
+    color: #fff;
+    padding: 14px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 20px;
+    border-radius: 0 0 8px 8px;
+}
+.page-content { padding: 0 20px 20px; }
+.form-bar {
+    background: #fff;
+    border: 1px solid #E0C0D4;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.events-form { background: #fff; border: 1px solid #E0C0D4; border-radius: 8px; padding: 12px 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+input[type="text"], input[type="password"] {
+    border: 1px solid #E0C0D4;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #fff;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #C8689A;
+    box-shadow: 0 0 0 3px rgba(200,104,154,0.18);
+}
+input[type="text"]:disabled { background: #f5f5f5; color: #aaa; border-color: #e8e8e8; }
+select {
+    border: 1px solid #E0C0D4;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 13px;
+    background: #fff;
+}
+input[type="submit"] {
+    background: #C8689A;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+input[type="submit"]:hover { background: #A04070; }
+button[name="delete"] {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button[name="delete"]:hover { background: #b02a37; }
+label { font-weight: 600; }
+p.success { color: #28a745; font-weight: 600; }
+p.error   { color: #dc3545; font-weight: 600; }
+</style>
 <script language="JavaScript">
 function sendChange() {
     return true;
@@ -59,7 +148,8 @@ function selectRow( id ) {
 </script> 
 </head>
 <body>
-
+<div class="page-header">Big Pink Rankings &mdash; Fix Event</div>
+<div class="page-content">
 <?php
 function do_update()
 {
@@ -195,22 +285,27 @@ function do_delete()
 
     if ($result)
     {
-    echo '<form method="get">';
+    echo '<div class="form-bar">';
+    echo '<form method="get" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
     echo '<input type="text" size="40" name="name_search" placeholder="Name pattern (use % as wildcard)" value="'.htmlspecialchars($nameSearch).'">';
-    echo ' <select name="sprint_filter">';
+    echo '<select name="sprint_filter">';
     echo '<option value=""'     .($sprintFilter===''     ?' selected':'').'>Any</option>';
     echo '<option value="1"'    .($sprintFilter==='1'    ?' selected':'').'>Sprint</option>';
     echo '<option value="0"'    .($sprintFilter==='0'    ?' selected':'').'>Not sprint</option>';
     echo '<option value="mixed"'.($sprintFilter==='mixed'?' selected':'').'>Mixed</option>';
     echo '</select>';
-    echo ' <input type="submit" value="Search"/>';
+    echo '<input type="submit" value="Search"/>';
     echo '</form>';
+    echo '</div>';
     echo "\r\n";
+    echo '<div class="events-form">';
     echo'<form onsubmit="return sendChange()" method=post>';
     echo "\r\n";
+    echo '<div class="form-bar" style="margin-bottom:10px">';
     echo '<label for="hash">Password</label>';
     echo '<input type="password" size="16" name="hash">';
-    echo ' <input type="submit" value="Submit"/><br/>';
+    echo '<input type="submit" value="Submit"/>';
+    echo '</div>';
     echo "\r\n";
     $i = 0;
     while ($row = mysqli_fetch_array ($result, MYSQLI_ASSOC))
@@ -245,8 +340,10 @@ function do_delete()
         }
     echo '<input type="submit" value="Submit"/>';
     echo '</form>';
+    echo '</div>';
     }
 ?>
+</div>
 
 
 </body>
