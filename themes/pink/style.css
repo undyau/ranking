@@ -12,8 +12,11 @@ table.tablesorter {
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 	background-color: #FC99EA;
 	border: 1px solid #FFF;
-  font-size: 10pt;
+	font-size: 10pt;
 	padding: 4px;
+	position: sticky;
+	top: 0;
+	z-index: 10;
 }
 table.tablesorter thead tr .header {
 	background-image: url(bg.gif);
@@ -30,6 +33,9 @@ table.tablesorter tbody td {
 table.tablesorter tbody tr.odd td {
 	background-color:#FDCFF9;
 }
+table.tablesorter tbody tr:hover td {
+	background-color: #f9a8ef;
+}
 table.tablesorter thead tr .headerSortUp {
 	background-image: url(asc.gif);
 }
@@ -42,6 +48,19 @@ background-color: #D379CF;
 table.tablesorter thead th {
     border-radius: 4px;
     -moz-border-radius: 4px;
-    background-color: #00000;
+    background-color: #000000;
     padding: 4px;
-}    
+}
+
+.table-scroll {
+    clear: both;
+    overflow-y: auto;
+    border: 1px solid #FC99EA;
+    border-radius: 4px;
+}
+
+@media screen and (max-width: 768px) {
+    .col-state, .col-gender {
+        display: none;
+    }
+}

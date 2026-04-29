@@ -11,7 +11,7 @@ a:active {color: red; }
 a.PointsLink:link {color: #0000ff; font-weight: normal; margin-left:10;}
 a.PointsLink:visited {color: #894f7b; font-weight: normal; margin-left:10;}
 a.PointsLink:hover {text-decoration: underline; background-color: #FC99EA;  margin-left:10;}
-a.PointsLink:active {color: red; } 
+a.PointsLink:active {color: red; }
 
 #RunnerLabel{
 font-family: monospace;
@@ -22,9 +22,7 @@ text-align:center;
 
 #owner{
 font-family:arial;
-Font-size:10px;
-/*border: 5px solid #CCCCFF*/
-/*background: #00FFFF;*/
+font-size:10px;
 margin: 8px;
 color: #FC99EA;
 text-align:right;
@@ -32,14 +30,14 @@ text-align:right;
 
 .instructions{
 font-family:arial;
-Font-size:16px;
+font-size:16px;
 float: left;
 width: 50%;
 margin: 15px;
 }
 .notes{
 font-family:arial;
-Font-size:12px;
+font-size:12px;
 border: 3px solid #FC99EA;
 float: right;
 width: 40%;
@@ -52,28 +50,26 @@ border-radius: 5px;
 #banner
 {margin: 0 auto;
 font-family:arial;
-/*Width: 640px;*/
-Height: 100px;
-/*Border: #FC99EA solid 10px;*/
-Background: #FC99EA ;
-Color:#000000;
-Font-size:12px;
-Text-align: center;
-Padding-right: 10px;
+height: 100px;
+background: #FC99EA;
+color:#000000;
+font-size:12px;
+text-align: center;
+padding-right: 10px;
 border-radius: 8px;
 -moz-border-radius: 8px;
 }
 
 #BannerTitle{margin: 0 auto;
 font-family:arial;
-Color:#000000;
-Font-size:44px;
-Text-align: center;
+color:#000000;
+font-size:44px;
+text-align: center;
 }
 
 #BannerTitle a:link,
 #BannerTitle a:visited,
-#LastEvent a:link, 
+#LastEvent a:link,
 #LastEvent a:visited   {color: #000000; font-weight: normal; margin-left:10;}
 
 #BannerTitle a:hover,
@@ -81,16 +77,15 @@ Text-align: center;
 
 #LastEvent{margin: 0 auto;
 font-family:arial;
-Color:#000000;
-Font-size:11px;
-Text-align: center;
+color:#000000;
+font-size:11px;
+text-align: center;
 }
 
 h1 {
   font-family:arial;
   font-weight: bold;
-  Color:#000000;
+  color:#000000;
   font-size: 24px;
 }
-
 

@@ -4,10 +4,11 @@ require_once(__DIR__.'/mysqli_connect.php');
 $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefox/4.0b9pre';
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="content-type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Big Pink Australian Orienteering Rankings</title>
 <script type="text/javascript" src="jscript/table.js"></script> 
 <script type="text/javascript" src="jscript/postfilter.js"></script> 
@@ -29,20 +30,34 @@ $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefo
             return "";
     }
     
+    function fitTableScroll() {
+        var el = document.querySelector('.table-scroll');
+        if (el) {
+            el.style.height = (window.innerHeight - el.getBoundingClientRect().top - 10) + 'px';
+        }
+    }
+
     window.onload = function(e) {
         initFiltering("namefilter");
         initFiltering("clubfilter");
         initFiltering("statefilter");
         initFiltering("genderfilter");
         initFiltering("classfilter");
-    };    
+        fitTableScroll();
+    };
+
+    window.addEventListener('resize', fitTableScroll);
 
 function copyToClipboard(text) {
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-  } 
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text);
+    } else {
+        window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+    }
+}
 
 function getFilterUrl() {
-    retVal = "http://ranking.bigfootorienteers.com/display.php?a=1";
+    retVal = "https://ranking.bigfootorienteers.com/display.php?a=1";
     retVal += filterUrlText("namefilter");
     retVal += filterUrlText("clubfilter");
     retVal += filterUrlText("statefilter");
@@ -82,10 +97,11 @@ function getFilterUrl() {
 from `clubs`, runners where clubs.id = clubid and current_ranking > 0 and clubs.country = "AUS"
 order by runners.current_ranking desc';
     $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
+    echo '<div class="table-scroll">';
     if ($isMobile)
-        echo '<table id="rankingTable" class="tablesorter" cellspacing="0" cellpadding="2" style="width:auto">';
+        echo '<table id="rankingTable" class="tablesorter table-autostripe table-stripeclass:odd" cellspacing="0" cellpadding="2" style="width:auto">';
     else
-        echo '<table id="rankingTable" class="tablesorter" cellspacing="0" cellpadding="2">';
+        echo '<table id="rankingTable" class="tablesorter table-autostripe table-stripeclass:odd" cellspacing="0" cellpadding="2">';
     ?>
 
 <thead> 
@@ -93,10 +109,10 @@ order by runners.current_ranking desc';
         <th>Pos</th>
     <th>Name</th> 
     <th class="filterable">Club</th>
-    <th class="filterable">State</th>
+    <th class="filterable col-state">State</th>
 <?php
     if (!$isMobile)
-        echo '<th class="filterable">Gender</th>';
+        echo '<th class="filterable col-gender">Gender</th>';
 ?>      
     <th class="filterable">Class</th>
     <th>Points</th> 
@@ -111,10 +127,10 @@ order by runners.current_ranking desc';
     else
         echo "<th><input id='clubfilter' name='filter' size='2' onkeyup='Table.filter(this,this)' value='$club'></th>";
 
-    echo "<th><input id='statefilter' name='filter' size='3' onkeyup='Table.filter(this,this)' value='$state'></th>";
+    echo "<th class='col-state'><input id='statefilter' name='filter' size='3' onkeyup='Table.filter(this,this)' value='$state'></th>";
 
     if (!$isMobile)
-        echo "<th><input id='genderfilter' name='filter' size='1' onkeyup='Table.filter(this,this)' value='$gender'></th>";
+        echo "<th class='col-gender'><input id='genderfilter' name='filter' size='1' onkeyup='Table.filter(this,this)' value='$gender'></th>";
 
     echo "<th><input id='classfilter' name='filter' size='6' onkeyup='Table.filter(this,this)' value='$class'></th>";
 ?>
@@ -132,9 +148,9 @@ order by runners.current_ranking desc';
             if ($row['points'] != $lastpoints)
                 $j = $i;
             if ($isMobile)
-                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['clubshort']."</td><td>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['clubshort']."</td><td class='col-state'>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             else
-                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['club']."</td><td>".$row['state']."</td><td>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['club']."</td><td class='col-state'>".$row['state']."</td><td class='col-gender'>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             $i++;           
             $lastpoints = $row['points'];       
             }
@@ -144,5 +160,6 @@ order by runners.current_ranking desc';
         }
 ?>
 </table>
+</div>
 </body>
 </html>
