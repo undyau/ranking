@@ -328,11 +328,12 @@ function do_delete()
         else
             $sprintSel = '';
         echo ' <select name="sprint'.$row["id"].'" onclick="selectRow('.$row["id"].')">';
-        echo '<option value=""'.($sprintSel===''?' selected':'').'>mixed</option>';
+        echo '<option value=""'.($sprintSel===''?' selected':'').'>zero or mixed</option>';
         echo '<option value="1"'.($sprintSel==='1'?' selected':'').'>sprint</option>';
         echo '<option value="0"'.($sprintSel==='0'?' selected':'').'>not sprint</option>';
         echo '</select>';
-        echo ' <a href="'.$row['url'].'"  target="_blank">link</a>';
+        echo ' <a href="'.$row['url'].'" target="_blank">eventor</a>';
+        echo ' <a href="https://ranking.bigfootorienteers.com/displayevent.php?id='.$row['id'].'" target="_blank">ranking</a>';
         echo ' <button type="submit" name="delete" value="'.$row["id"].'" onclick="return confirm(\'Delete event and all its results?\')">Delete</button>';
         echo '<br/>';
         echo "\r\n";
