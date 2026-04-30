@@ -18,11 +18,12 @@ function save_all_finished($html)
     foreach ($parts as $part)
         {
         $matches = array();
-        if (preg_match('/([0-9]+)"><img alt="Results"/', $part, $matches))
+        if (preg_match('/([0-9]+)(?:&eventRaceId=([0-9]+))?"><img alt="Results"/', $part, $matches))
             {
             $id = $matches[1];
-            $query = "insert ignore into eventorEvents set id = $id, processed = false";
-            $result = $mysqli->query($query) or   trigger_error($mysqli->error." ".$query);
+            $raceid = isset($matches[2]) ? (int)$matches[2] : 0;
+            $query = "insert ignore into eventorEvents set id = $id, raceid = $raceid, processed = false";
+            $result = $mysqli->query($query) or trigger_error($mysqli->error." ".$query);
             }
         }
 }

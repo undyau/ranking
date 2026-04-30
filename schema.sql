@@ -66,7 +66,8 @@ CREATE TABLE `control` (
 --
 
 CREATE TABLE `eventorEvents` (
-  `id` int(7) NOT NULL COMMENT 'Eventor id',
+  `id` int(7) NOT NULL COMMENT 'Eventor event id',
+  `raceid` int(7) NOT NULL DEFAULT 0 COMMENT 'Eventor race id (0 if no sub-race)',
   `processed` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Has event been processed'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
@@ -158,7 +159,7 @@ ALTER TABLE `control`
 -- Indexes for table `eventorEvents`
 --
 ALTER TABLE `eventorEvents`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`, `raceid`);
 
 --
 -- Indexes for table `events`

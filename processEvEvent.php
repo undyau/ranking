@@ -36,7 +36,7 @@ function load_clubs_db()
         }
     }
 
-function process_event($event_id)
+function process_event($event_id, $race_id = 0)
     {
     global $url;
     global $event;
@@ -44,13 +44,14 @@ function process_event($event_id)
     global $courses;
     global $mysqli;
 
-    $html = get_result_page($url.$event_id);
+    $full_url = $url.$event_id.($race_id > 0 ? "&eventRaceId=$race_id" : "");
+    $html = get_result_page($full_url);
 
     if (strlen($html) > 200)
         {
-        Trace("Got html for event ".$url.$event_id);
-    
-        $event['url'] = $url.$event_id;
+        Trace("Got html for event ".$full_url);
+
+        $event['url'] = $full_url;
 
         $skipped = false;
         if (!parse_page($html, $skipped))

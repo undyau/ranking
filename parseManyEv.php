@@ -23,13 +23,14 @@ function process_events()
     global $courses;
     global $url;
 
-    $sql = "SELECT id FROM `eventorEvents` WHERE `processed` = 0";
+    $sql = "SELECT id, raceid FROM `eventorEvents` WHERE `processed` = 0";
 
     $result = $mysqli->query($sql) or trigger_error(mysqli_error().$sql);
 
     while($row = $result->fetch_assoc())
         {
-        $ids[] = $row['id'];
+        $ids[]     = $row['id'];
+        $raceids[] = $row['raceid'];
         }
     $count = $result->num_rows;
     $result->free();
@@ -39,14 +40,15 @@ function process_events()
         $clubs = array();
         $results = array(array());
         $courses = array(array());
-        Trace("Going to process $url".$ids[$i]);
-        if (process_event($ids[$i]))
+        $raceStr = $raceids[$i] > 0 ? "&eventRaceId=".$raceids[$i] : "";
+        Trace("Going to process $url".$ids[$i].$raceStr);
+        if (process_event($ids[$i], $raceids[$i]))
             {
-            $sql = "UPDATE `eventorEvents` SET `processed` = 1 WHERE `id` = ".$ids[$i];
+            $sql = "UPDATE `eventorEvents` SET `processed` = 1 WHERE `id` = ".$ids[$i]." AND `raceid` = ".$raceids[$i];
             $result = $mysqli->query($sql) or trigger_error(mysqli_error().$sql);
             if(!$result)
                 {
-                die('There was an error running the query [' . mysqli_error().']\n'.$sql);      
+                die('There was an error running the query [' . mysqli_error().']\n'.$sql);
                 }
             }
         }
