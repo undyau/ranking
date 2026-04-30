@@ -1,6 +1,6 @@
 <div class="notes-wrapper">
 <div class="instructions">
-<p>Results data from <a href="http://eventor.orienteering.asn.au">Eventor</a>. Ranking system is based on the <a href="https://www.britishorienteering.org.uk/images/uploaded/downloads/Competition%20Rule%20S%202014rankingscheme.pdf">BOF system</a> with some small improvements. A competitors best six events are used in calculating their ranking, but only two sprint events are counted in that six. Urban events are not counted.
+<p>Results data from <a href="http://eventor.orienteering.asn.au">Eventor</a>. Ranking system is based on the <a href="https://share.google/U5ezNxtwSUhh0Tx2u">BOF system</a> with some small improvements. A competitors best six events are used in calculating their ranking, but only two sprint events are counted in that six. Urban events are not counted.
 Run of the week is based on how many standard deviations a competitor beats their average performance by.</p>
 <p>Use <a href="https://github.com/undyau/ranking/issues">GitHub</a> to raise issues</p>
 <p>Type in filter boxes to filter by name, club, state or gender. <button id='demo' onclick='copyToClipboard(getFilterUrl())'>Filter as link</button></p></div>
