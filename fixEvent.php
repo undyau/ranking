@@ -278,7 +278,7 @@ function do_delete()
     }
 
     $query = "SELECT e.name, e.url, e.date, e.id, MIN(r.sprint) as min_sprint, MAX(r.sprint) as max_sprint
-              FROM events e LEFT JOIN results r ON r.eventid = e.id
+              FROM events e INNER JOIN results r ON r.eventid = e.id
               $whereClause
               GROUP BY e.id, e.name, e.url, e.date $havingClause ORDER BY e.date DESC LIMIT 100";
     $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
