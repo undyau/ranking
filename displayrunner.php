@@ -49,7 +49,7 @@ $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefo
     if ($result)
         {
         $row = mysqli_fetch_array ($result, MYSQLI_ASSOC);
-        echo "<div id=\"RunnerLabel\"><em>".$row['name']."</em>    (".$row['club'].")  <em>".$row['points']."</em></div>";
+        echo "<div id=\"RunnerLabel\"><em>".$row['name']."</em>    (".$row['club'].")  <em>".$row['points']."</em>  <a href=\"runnerchart.php?id=$id\">history</a></div>";
         }
     
     $query = "SELECT results.points as points, DATE_FORMAT(events.date, '%e/%c/%Y') as date, events.name as event, events.url as url, results.class as class, events.id as eventid, results.sprint as sprint    
