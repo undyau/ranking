@@ -20,7 +20,7 @@ require_once(__DIR__.'/mysqli_connect.php');
 
     $id = isset($_REQUEST['id']) && ctype_digit($_REQUEST['id']) ? (int)$_REQUEST['id'] : 0;
 
-    $query = "SELECT runners.name as name, clubs.name as club
+    $query = "SELECT runners.name as name, clubs.name as club, runners.current_ranking as current_ranking
               FROM runners JOIN clubs ON clubs.id = runners.clubid
               WHERE runners.id = $id";
     $result = $mysqli->query($query) or trigger_error($mysqli->error." ".$query);
@@ -47,6 +47,13 @@ require_once(__DIR__.'/mysqli_connect.php');
         $y = (int)$row['year'];
         $runnerByYear[$y][] = ['points' => (int)$row['points'], 'sprint' => (int)$row['sprint'], 'name' => $row['eventname'], 'class' => $row['class']];
         }
+
+    // Fetch all runners' current_ranking for current-year percentile
+    $currentRankings = [];
+    $qr = $mysqli->query("SELECT current_ranking FROM runners WHERE current_ranking > 0")
+          or trigger_error($mysqli->error);
+    while ($rr = $qr->fetch_row())
+        $currentRankings[] = (int)$rr[0];
 
     // Fetch all results for all runners to calculate year-end scores for everyone
     $query = "SELECT r.runnerid, YEAR(e.date) as year, r.points, r.sprint
@@ -84,60 +91,76 @@ require_once(__DIR__.'/mysqli_connect.php');
     $labels      = [];
     $percentiles = [];
     $tooltips    = [];
+    $currentYear = (int)date('Y');
+
+    $currentYearAdded = false;
 
     foreach ($allByYear as $year => $runners)
         {
         if (!isset($runners[$id])) continue;
 
-        // Calculate score for our runner (using named events for tooltip)
-        $mine = yearEndScore($runnerByYear[$year] ?? $runners[$id]);
-        if (!$mine) continue;
-        $myScore = $mine['score'];
+        $isCurrent = ($year == $currentYear && $runner['current_ranking'] > 0);
+        $mine      = yearEndScore($runnerByYear[$year] ?? $runners[$id]);
 
-        // Calculate scores for all runners this year
-        $allScores = [];
-        foreach ($runners as $rid => $events)
+        if (!$isCurrent && !$mine) continue;
+
+        $myScore = $isCurrent ? $runner['current_ranking'] : $mine['score'];
+
+        // Calculate percentile: current year uses current_ranking pool, past years use yearEndScore
+        if ($isCurrent)
             {
-            $s = yearEndScore($events);
-            if ($s) $allScores[] = $s['score'];
+            $pool = $currentRankings;
+            }
+        else
+            {
+            $pool = [];
+            foreach ($runners as $rid => $events)
+                {
+                $s = yearEndScore($events);
+                if ($s) $pool[] = $s['score'];
+                }
             }
 
-        $total = count($allScores);
-        $below = count(array_filter($allScores, function($s) use ($myScore) { return $s < $myScore; }));
+        $total = count($pool);
+        $below = count(array_filter($pool, function($s) use ($myScore) { return $s < $myScore; }));
         $percentile = round(($below / $total) * 100);
 
         $eventLines = [];
-        foreach ($mine['events'] as $e)
-            {
-            $name = isset($e['name']) ? $e['name'] : 'Event';
-            $class = isset($e['class']) && $e['class'] !== '' ? ' (' . $e['class'] . ')' : '';
-            $eventLines[] = $name . $class;
-            }
+        if ($mine)
+            foreach ($mine['events'] as $e)
+                {
+                $name  = isset($e['name'])  ? $e['name']  : 'Event';
+                $class = isset($e['class']) && $e['class'] !== '' ? ' (' . $e['class'] . ')' : '';
+                $eventLines[] = $name . $class;
+                }
 
         $position = $total - $below;
         if ($percentile >= 99)
             {
             $mod100 = $position % 100;
             $mod10  = $position % 10;
-            if ($mod100 >= 11 && $mod100 <= 13)
-                $sfx = 'th';
-            elseif ($mod10 == 1) $sfx = 'st';
-            elseif ($mod10 == 2) $sfx = 'nd';
-            elseif ($mod10 == 3) $sfx = 'rd';
-            else                 $sfx = 'th';
-            $ord = $position . $sfx;
-            $summary = $ord . ' of ' . $total . ' runners';
+            if ($mod100 >= 11 && $mod100 <= 13)      $sfx = 'th';
+            elseif ($mod10 == 1)                      $sfx = 'st';
+            elseif ($mod10 == 2)                      $sfx = 'nd';
+            elseif ($mod10 == 3)                      $sfx = 'rd';
+            else                                      $sfx = 'th';
+            $summary = $position . $sfx . ' of ' . $total . ' runners';
             }
         else
             $summary = 'Top ' . (100 - $percentile) . '% of ' . $total . ' runners';
 
-        if ($mine['count'] < 6)
+        if ($isCurrent)
+            $summary .= ' (current ranking)';
+        elseif ($mine && $mine['count'] < 6)
             $summary .= ' (' . $mine['count'] . ' events)';
 
         $labels[]      = $year;
         $percentiles[] = $percentile;
         $tooltips[]    = array_merge([$summary], $eventLines);
+
+        if ($year == $currentYear) $currentYearAdded = true;
         }
+
 ?>
 <div style="max-width:800px; margin:20px auto; padding:0 20px;">
     <canvas id="rankingChart"></canvas>

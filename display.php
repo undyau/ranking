@@ -150,10 +150,12 @@ order by runners.current_ranking desc';
             {
             if ($row['points'] != $lastpoints)
                 $j = $i;
+            $eventsBadge  = " <a class='PointsLink' href='displayrunner.php?id=".$row['id']."'>events</a>";
+            $historyBadge = " <a class='PointsLink' href='runnerchart.php?id=".$row['id']."'>history</a>";
             if ($isMobile)
-                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['clubshort']."</td><td class='col-state'>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+                echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge.$historyBadge."</td><td>".$row['clubshort']."</td><td class='col-state'>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             else
-                echo "<tr><td>$j</td><td><a href=\"../displayrunner.php?id=".$row['id']."\">".$row['name']."</a></td><td>".$row['club']."</td><td class='col-state'>".$row['state']."</td><td class='col-gender'>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+                echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge.$historyBadge."</td><td>".$row['club']."</td><td class='col-state'>".$row['state']."</td><td class='col-gender'>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             $i++;           
             $lastpoints = $row['points'];       
             }
