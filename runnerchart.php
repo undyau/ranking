@@ -161,6 +161,8 @@ require_once(__DIR__.'/mysqli_connect.php');
         if ($year == $currentYear) $currentYearAdded = true;
         }
 
+    $yMin = count($percentiles) ? max(0, (int)(floor(min($percentiles) / 10) * 10)) : 0;
+    $yMax = count($percentiles) ? min(100, max($percentiles) + 5) : 100;
 ?>
 <div style="max-width:800px; margin:20px auto; padding:0 20px;">
     <canvas id="rankingChart"></canvas>
@@ -207,8 +209,8 @@ new Chart(document.getElementById('rankingChart').getContext('2d'), {
         },
         scales: {
             y: {
-                min: 0,
-                max: 100,
+                min: <?php echo $yMin; ?>,
+                max: <?php echo $yMax; ?>,
                 title: { display: true, text: 'Percentile', font: { family: 'Inter' } }
             },
             x: {
