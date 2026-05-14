@@ -40,8 +40,8 @@ function process_events()
         $clubs = array();
         $results = array(array());
         $courses = array(array());
-        $raceStr = $raceids[$i] > 0 ? "&eventRaceId=".$raceids[$i] : "";
-        Trace("Going to process $url".$ids[$i].$raceStr);
+        //$raceStr = $raceids[$i] > 0 ? "&eventRaceId=".$raceids[$i] : "";
+        //Trace("Going to process $url".$ids[$i].$raceStr);
         if (process_event($ids[$i], $raceids[$i]))
             {
             $sql = "UPDATE `eventorEvents` SET `processed` = 1 WHERE `id` = ".$ids[$i]." AND `raceid` = ".$raceids[$i];

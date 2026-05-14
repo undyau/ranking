@@ -49,7 +49,7 @@ function process_event($event_id, $race_id = 0)
 
     if (strlen($html) > 200)
         {
-        Trace("Got html for event ".$full_url);
+        //Trace("Got html for event ".$full_url);
 
         $event['url'] = $full_url;
 
@@ -145,7 +145,7 @@ foreach ($data as $key => $row)  //process by course
     {
     global $MinRankers;
     global $courses;
-    Trace("Processing course ".$key." for ".$event['name']." (".$courses[$key]['coursename'].")");
+    Trace("Processing course ".$key." for ".$event['name']." (".$courses[$key]['coursename']." etc)");
     $year = (int)substr($event['date'], 0, 4);  
     if ($year < 2011)
         $min = $MinRankers - (2011-$year);
@@ -218,7 +218,7 @@ recalc:
                     $sd = max(35, $result->current_sd);
                     if ($maxDeviation == $result->current_score - $score) 
                         {
-                        Trace("Dropping ranker score: ".$score.", name: ".$result->name.", current_score: ".$result->current_score.", dev: ".$sd);
+                        Trace("Dropping ".$result->name." score:".$score." current:".$result->current_score." sd:".$sd);
                         $row = array_diff($row, array($result)); // remove me from the array
                         break;
                         }
@@ -429,14 +429,14 @@ function remediate_courses()
                 ($course['controls']  > 0 || strpos($course['length'],'.') !== false) &&
                 courses_can_merge($courses[$value]['name'], $course['name']))
                 {   
-                Trace("Merging ".$courses[$value]['name']." with ".$course['name']);
+                Trace("Merging ".$course['name']." into ".$courses[$value]['name']." (id=$value)");
                 $lookups[$courseid] = $value;
                 break;
                 }
             }   
         }
-    foreach ($lookups as $lkey => $lval)
-        Trace("course lookup $lkey => $lval");
+    //foreach ($lookups as $lkey => $lval)
+        //Trace("course lookup $lkey => $lval");
     // Loop through all results and fix up the course
     foreach ($results as $id => $result)
         $results[$id]['course'] = $lookups[$result['course']];
@@ -609,7 +609,7 @@ function get_best_runner($dbrows, $runnerid)
             {
             if ($row['state'] = $clubdb[$results[$runnerid]['club']]['state'])
                 {
-                Trace("Duplicate runner - using most recent runner with same state - ".$row['id'].": ".$row['name']." ".$row['shortname']." ". $row['state']);
+                Trace("Dup runner ".$results[$runnerid]['name'].": ".$clubdb[$results[$runnerid]['club']]['shortname']." -> ".$row['shortname']." (same state)");
                 return $row;
                 }
             }
@@ -619,7 +619,7 @@ function get_best_runner($dbrows, $runnerid)
         {
         if (array_key_exists("shortname", $row) && array_key_exists("state", $row))
             {
-            Trace("Duplicate runner - using most recent runner with same name - ".$row['name']." ".$row['shortname']." ". $row['state']);
+            Trace("Dup runner ".$results[$runnerid]['name'].": ".$clubdb[$results[$runnerid]['club']]['shortname']." -> ".$row['shortname']);
             return $row;
             }
         }       

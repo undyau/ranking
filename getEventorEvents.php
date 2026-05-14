@@ -12,9 +12,10 @@ save_all_finished($html);
 function save_all_finished($html)
 {
     global $mysqli;
+    global $url;
     $parts = explode('<span><a href="/Events/ResultList?eventId=', $html);
-    Trace("There are ".count($parts)." parts to check");
-    Trace("The HTML is ".strlen($html)." long");
+    //Trace("There are ".(count($parts)-1)." events to check in ".$url);
+    //Trace("The HTML is ".strlen($html)." long");
     foreach ($parts as $part)
         {
         $matches = array();
