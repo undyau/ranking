@@ -98,6 +98,8 @@ button[name="delete"]:hover { background: #b02a37; }
 label { font-weight: 600; }
 p.success { color: #28a745; font-weight: 600; }
 p.error   { color: #dc3545; font-weight: 600; }
+.fi-name { width: 22vw; min-width: 120px; }
+.fi-url  { width: 28vw; min-width: 120px; }
 </style>
 <script language="JavaScript">
 function sendChange() {
@@ -321,8 +323,8 @@ function do_delete()
             echo '<input type="radio" name="which" value="'.$row["id"].'" onclick = "enableCtrls()">';
         }
         echo ' <input type="text" size="10" '.$enabled.' name="date'.$row["id"].'" value="'.$row['date'].'">';
-        echo ' <input type="text" size="70" name="name'.$row["id"].'" value="'.$row['name'].'" onclick="selectRow('.$row["id"].')">';
-        echo ' <input type="text" size="80" '.$enabled.' name="url'.$row["id"].'" value="'.$row['url'].'">';
+        echo ' <input type="text" class="fi-name" name="name'.$row["id"].'" value="'.$row['name'].'" onclick="selectRow('.$row["id"].')">';
+        echo ' <input type="text" class="fi-url" '.$enabled.' name="url'.$row["id"].'" value="'.$row['url'].'">';
         if ($row['min_sprint'] !== null && $row['min_sprint'] == $row['max_sprint'])
             $sprintSel = (string)(int)$row['min_sprint'];
         else
