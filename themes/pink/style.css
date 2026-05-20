@@ -14,6 +14,8 @@ table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 	border: 1px solid #FFF;
 	font-size: 10pt;
 	padding: 8px;
+}
+table.tablesorter thead tr:first-child th {
 	position: sticky;
 	top: 0;
 	z-index: 10;
@@ -68,7 +70,6 @@ table.tablesorter thead th input[type="text"]:focus {
 
 .table-scroll {
     clear: both;
-    overflow-y: auto;
     border: 1px solid #C8689A;
     border-radius: 4px;
 }

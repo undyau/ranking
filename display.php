@@ -33,23 +33,25 @@ $userAgent = 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0b9pre) Gecko/20110111 Firefo
             return "";
     }
     
-    function fitTableScroll() {
-        var el = document.querySelector('.table-scroll');
-        if (el) {
-            el.style.height = (window.innerHeight - el.getBoundingClientRect().top - 10) + 'px';
-        }
+    function applyBannerOffset() {
+        var b = document.getElementById('banner');
+        if (!b) return;
+        var h = b.offsetHeight;
+        document.body.style.paddingTop = h + 'px';
+        var ths = document.querySelectorAll('.tablesorter thead tr:first-child th');
+        for (var i = 0; i < ths.length; i++) ths[i].style.top = h + 'px';
     }
 
     window.onload = function(e) {
+        applyBannerOffset();
         initFiltering("namefilter");
         initFiltering("clubfilter");
         initFiltering("statefilter");
         initFiltering("genderfilter");
         initFiltering("classfilter");
-        fitTableScroll();
     };
 
-    window.addEventListener('resize', fitTableScroll);
+    window.addEventListener('resize', applyBannerOffset);
 
 function copyToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -79,11 +81,9 @@ function getFilterUrl() {
     $isMobile = $detect->isMobile() && !$detect->isTablet();
     
     
+    include('./banner.php');
     if (!$isMobile)
-        {
-        include('./banner.php');
         include('./notes.php');
-        }
 
   $name = in_array('name', $_GET) ? $_GET['name'] : "";
   $club = in_array('club', $_GET) ? $_GET['club'] : "";
@@ -150,12 +150,12 @@ order by runners.current_ranking desc';
             {
             if ($row['points'] != $lastpoints)
                 $j = $i;
-            $eventsBadge  = " <a class='PointsLink' href='displayrunner.php?id=".$row['id']."'>events</a>";
             $historyBadge = " <a class='PointsLink' href='runnerchart.php?id=".$row['id']."'>history</a>";
+            $eventsBadge  = " <span style='white-space:nowrap'><a class='PointsLink' href='displayrunner.php?id=".$row['id']."'>events</a>".$historyBadge."</span>";
             if ($isMobile)
-                echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge.$historyBadge."</td><td>".$row['clubshort']."</td><td class='col-state'>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+                echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge."</td><td>".$row['clubshort']."</td><td class='col-state'>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             else
-                echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge.$historyBadge."</td><td>".$row['club']."</td><td class='col-state'>".$row['state']."</td><td class='col-gender'>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
+                echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge."</td><td>".$row['club']."</td><td class='col-state'>".$row['state']."</td><td class='col-gender'>".$row['gender']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             $i++;           
             $lastpoints = $row['points'];       
             }
