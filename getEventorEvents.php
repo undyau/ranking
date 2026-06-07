@@ -2,8 +2,8 @@
 require_once(__DIR__.'/mysqli_connect.php');
 require_once(__DIR__.'/trace.php');
 
-//$url = "http://eventor.orienteering.asn.au/Events?organisations=9,4,5,7,8,10,6&mode=List&map=false";
-$url = "https://eventor.orienteering.asn.au/Events?organisations=2&mode=List&map=false";
+//$url = "http://eventor.orienteering.asn.au/Events?organisations=9,4,5,7,8,10,6&mode=Calendar&map=false";
+$url = "https://eventor.orienteering.asn.au/Events?organisations=2&mode=Calendar&map=false";
 $DEBUGME = true;
 
 $html = file_get_contents($url);
@@ -19,7 +19,7 @@ function save_all_finished($html)
     foreach ($parts as $part)
         {
         $matches = array();
-        if (preg_match('/([0-9]+)(?:&eventRaceId=([0-9]+))?"><img alt="Results"/', $part, $matches))
+        if (preg_match('/([0-9]+)(?:&amp;eventRaceId=([0-9]+))?&amp;groupBy=EventClass"><img alt="Results"/', $part, $matches))
             {
             $id = $matches[1];
             $raceid = isset($matches[2]) ? (int)$matches[2] : 0;
