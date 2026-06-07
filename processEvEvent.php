@@ -14,6 +14,7 @@ $DEBUGME = true;
 $ignoreRe = '/(MTBO|TEST|RELAY|SCORE|STREET|BIKE|TEAM|DUO|NIGHT|MTB|SSS|SKI|MELBOURNE PAS|SCATTER|WALKER|SATURDAY O.*SERIES|SOS |URBAN|MAPRUN|UFO)/';
 $logCount = 0;
 $sprint = false;
+$raceDateOverride = null;
 
 function load_clubs_db()
     {
@@ -43,9 +44,14 @@ function process_event($event_id, $race_id = 0)
     global $results;
     global $courses;
     global $mysqli;
+    global $raceDateOverride;
 
     $full_url = $url.$event_id.($race_id > 0 ? "&eventRaceId=$race_id" : "");
     $html = get_result_page($full_url);
+
+    // The result page only shows the overall multi-day event date range, not the
+    // date of this specific race, so look the race's own date up separately.
+    $raceDateOverride = ($race_id > 0) ? lookup_race_date($event_id, $race_id) : null;
 
     if (strlen($html) > 200)
         {
@@ -91,6 +97,26 @@ function process_event($event_id, $race_id = 0)
         }
     }
     
+function lookup_race_date($event_id, $race_id)
+    {
+    $html = get_result_page("https://eventor.orienteering.asn.au/Events/Show/".$event_id);
+
+    $dates = array();
+    if (preg_match_all('/<caption>([^<]+)<\/caption>\s*<tbody>\s*<tr>\s*<th>Date<\/th>\s*<td>\s*[A-Za-z]+\s+([0-9]{1,2})\s+([A-Za-z]+)\s+([0-9]{4})/', $html, $dm, PREG_SET_ORDER))
+        foreach ($dm as $d)
+            $dates[strtolower(trim($d[1]))] = $d[4]."-".date('m', strtotime($d[3]))."-".str_pad($d[2], 2, '0', STR_PAD_LEFT);
+
+    $races = array();
+    if (preg_match_all('/<h3>Results, ([^<]+)<\/h3>.{1,400}?eventRaceId=([0-9]+)&amp;groupBy=EventClass">Result list/s', $html, $rm, PREG_SET_ORDER))
+        foreach ($rm as $r)
+            $races[(int)$r[2]] = strtolower(trim($r[1]));
+
+    if (array_key_exists($race_id, $races) && array_key_exists($races[$race_id], $dates))
+        return $dates[$races[$race_id]];
+
+    return null;
+    }
+
 function delete_existing()
     {
     global $event;
@@ -1027,6 +1053,7 @@ function process_header(&$item)
     global $year;
     global $ignoreRe;
     global $mysqli;
+    global $raceDateOverride;
     $items = $item->getElementsByTagName('p');
     if ($items->length > 1)
         {
@@ -1043,7 +1070,7 @@ function process_header(&$item)
                 if (strtotime($year."-".date('m',strtotime($matches[3]))."-".$day) >
                     strtotime("+1 day", strtotime(date('Y-m-d'))))
                         $year = $year - 1;
-                $event['date'] = $year."-".date('m',strtotime($matches[3]))."-".$day;
+                $event['date'] = $raceDateOverride !== null ? $raceDateOverride : $year."-".date('m',strtotime($matches[3]))."-".$day;
                 $event['name'] = trim(mysqli_real_escape_string($mysqli, $matches[1]));
                 Trace( "Processing <a href =\"".$event['url']."\">".$event['name']."</a> ".$event['date']);     
                 return true;
