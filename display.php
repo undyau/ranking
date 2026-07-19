@@ -150,8 +150,9 @@ order by runners.current_ranking desc';
             {
             if ($row['points'] != $lastpoints)
                 $j = $i;
-            $historyBadge = " <a class='PointsLink' href='runnerchart.php?id=".$row['id']."'>history</a>";
-            $eventsBadge  = " <span style='white-space:nowrap'><a class='PointsLink' href='displayrunner.php?id=".$row['id']."'>events</a>".$historyBadge."</span>";
+            $historyBadge  = " <a class='PointsLink' href='runnerchart.php?id=".$row['id']."'>history</a>";
+            $matchupsBadge = " <a class='PointsLink' href='matchups.php?id=".$row['id']."'>matchups</a>";
+            $eventsBadge   = " <span style='white-space:nowrap'><a class='PointsLink' href='displayrunner.php?id=".$row['id']."'>events</a>".$historyBadge.$matchupsBadge."</span>";
             if ($isMobile)
                 echo "<tr><td>$j</td><td>".$row['name'].$eventsBadge."</td><td>".$row['clubshort']."</td><td class='col-state'>".$row['state']."</td><td>".$row['class']."</td><td>".$row['points']."</td></tr>\r";
             else
