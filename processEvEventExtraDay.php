@@ -510,8 +510,8 @@ function lookup_runner($id)
     if ($result->num_rows > 0)
         {
         $rows = array(array());
-        while ($rows[] = $result->fetch_array (MYSQLI_ASSOC))
-            ;
+        while ($r = $result->fetch_array (MYSQLI_ASSOC))
+            $rows[] = $r;
         $count = 0;
         foreach ($rows as $row)
             {

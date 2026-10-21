@@ -18,6 +18,7 @@ function set_yobs()
 
 function update_yobs()
     {
+    global $mysqli;
     $current_year = date("Y");
     $query = "select name, id, yob_ceiling, yob_floor from runners";
     $result = $mysqli->query ($query) or trigger_error($mysqli->error." ".$query);
@@ -25,8 +26,8 @@ function update_yobs()
         return false;
     
     $rows = array();
-    while ($rows[] = mysqli_fetch_array ($result, MYSQLI_ASSOC))
-        ;   
+    while ($r = mysqli_fetch_array ($result, MYSQLI_ASSOC))
+        $rows[] = $r;
     
     foreach ($rows as $row)
         {
@@ -41,7 +42,7 @@ function update_yobs()
     
 function process_yob($row)
     {
-    global $DEBUGME;
+    global $DEBUGME, $mysqli;
     $query ="select distinct  YEAR(date) as year, class as class
     from events, results
     where results.eventid = events.id and results.runnerid = ". $row['id'];
@@ -50,7 +51,7 @@ function process_yob($row)
         return false;
 
     $floor = $ceiling = 0;  
-    while ($orientResult = mysql_fetch_array($result))
+    while ($orientResult = mysqli_fetch_array($result, MYSQLI_ASSOC))
         {
         //Trace("Processing class[".$orientResult['class']."] for ".$row['name'] );
         if (preg_match("/([M|W])([\d]{2,2})[-20]?[A|B|E|S|L]?/", $orientResult['class'], $matches) &&

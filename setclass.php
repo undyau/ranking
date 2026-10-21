@@ -26,8 +26,8 @@ function update_classes()
         return false;
 
     $rows = array();
-    while ($rows[] = mysqli_fetch_array ($result, MYSQLI_ASSOC))
-        ;
+    while ($r = mysqli_fetch_array ($result, MYSQLI_ASSOC))
+        $rows[] = $r;
 
     foreach ($rows as $row)
         {
